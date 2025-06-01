@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم المشرف{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">لوحة تحكم المشرف</h2>
+
+<h3>إضافة تحدي جديد</h3>
+<form method="POST" action="{{ url_for('admin_dashboard') }}" class="mb-5">
+    <div class="mb-3">
+        <label for="title" class="form-label">عنوان التحدي</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="category" class="form-label">التصنيف</label>
+        <input type="text" class="form-control" id="category" name="category" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">الوصف</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="flag" class="form-label">العلامة (Flag)</label>
+        <input type="text" class="form-control" id="flag" name="flag" required>
+    </div>
+    <div class="mb-3">
+        <label for="points" class="form-label">النقاط</label>
+        <input type="number" class="form-control" id="points" name="points" required min="0">
+    </div>
+    <button type="submit" class="btn btn-success">إضافة التحدي</button>
+</form>
+
+<h4>قائمة المستخدمين</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>اسم المستخدم</th>
+            <th>كلمة المرور (مشفرة)</th>
+            <th>النقاط</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.username }}</td>
+            <td><small>{{ u.password }}</small></td>
+            <td>{{ u.score }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+<a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a>
+
+<h3 class="mt-4">قائمة التحديات</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>العنوان</th>
+      <th>التصنيف</th>
+      <th>النقاط</th>
+      <th>الإجراءات</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for challenge in challenges %}
+    <tr>
+      <td>{{ challenge.title }}</td>
+      <td>{{ challenge.category }}</td>
+      <td>{{ challenge.points }}</td>
+      <td>
+        <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا التحدي؟')">حذف</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

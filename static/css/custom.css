@@ -1,0 +1,55 @@
+body {
+  background-color: #111827;
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  background-color: #1f2937 !important;
+}
+
+.nav-link {
+  color: #cbd5e1 !important;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #60a5fa !important;
+}
+
+.table-dark {
+  background-color: #1f2937;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #374151;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+.input-group input.form-control {
+  background-color: #374151;
+  border: none;
+  color: #eee;
+}
+
+.input-group input.form-control::placeholder {
+  color: #9ca3af;
+}
+
+.input-group .btn-success {
+  background-color: #22c55e;
+  border: none;
+}
+
+.input-group .btn-success:hover {
+  background-color: #16a34a;
+}

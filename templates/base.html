@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}CTF{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">منصة CTF</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="تبديل التنقل">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if session.get('user_id') %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">لوحة التحديات</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('scoreboard') }}">لوحة النقاط</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">تسجيل خروج</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">تسجيل الدخول</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">مستخدم جديد</a></li>
+        {% endif %}
+        {% if session.get('admin') %}
+        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('admin_dashboard') }}">لوحة الأدمن</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
