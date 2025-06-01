@@ -34,10 +34,14 @@ class Submission(db.Model):
     __table_args__ = (db.UniqueConstraint('user_id', 'challenge_id', name='unique_user_challenge'),)
 
 # ==================== Routes ====================
+from flask import Flask, render_template
+
+app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return render_template('index.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -166,3 +170,10 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    # ... كود تطبيق Flask بالكامل ...
+
+if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+
