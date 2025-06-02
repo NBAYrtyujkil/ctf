@@ -37,29 +37,30 @@
 
 <h4>قائمة المستخدمين</h4>
 <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>اسم المستخدم</th>
-      <th>كلمة المرور (مشفرة)</th>
-      <th>النقاط</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for u in users %}
-    <tr>
-      <td>{{ u.username }}</td>
-      <td><small>{{ u.password }}</small></td>
-      <td>{{ u.score }}</td>
-      <td>
-  <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
-    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
-  </form>
-</td>
-
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>اسم المستخدم</th>
+            <th>كلمة المرور (مشفرة)</th>
+            <th>النقاط</th>
+            <th>الإجراءات</th> <!-- هنا أضفنا العمود -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.username }}</td>
+            <td><small>{{ u.password }}</small></td>
+            <td>{{ u.score }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
+                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
 
 <hr>
 <a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a>
