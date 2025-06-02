@@ -159,6 +159,22 @@ def delete_challenge(challenge_id):
     db.session.commit()
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin_login'))
+
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash('تم حذف المستخدم بنجاح', 'success')
+    else:
+        flash('المستخدم غير موجود', 'danger')
+
+    return redirect(url_for('admin_dashboard'))
+
+
 @app.route('/scoreboard')
 def scoreboard():
     users = User.query.order_by(User.score.desc()).all()
