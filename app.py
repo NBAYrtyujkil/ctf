@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFProtect
 from functools import wraps
 from forms import AdminLoginForm
+import secrets
+app.secret_key = secrets.token_hex(32)  # يولّد مفتاحًا عشوائيًا بطول 64 حرفًا
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctf.db'
@@ -126,15 +128,19 @@ def submit_flag(challenge_id):
     return redirect(url_for('dashboard'))
 
 @app.route('/admin', methods=['GET', 'POST'])
+app.secret_key = 'q1!w2@e3#r4$t5%y6^'  # Set this once at the app level, outside routes
+
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     form = AdminLoginForm()
     if form.validate_on_submit():
-        if form.password.data == 'admin123':
+        if form.password.data == 'admin123':  # Your admin password here (or use environment variable)
             session['admin'] = True
             return redirect(url_for('admin_dashboard'))
         else:
             flash('كلمة المرور غير صحيحة', 'danger')
     return render_template('admin_login.html', form=form)
+
 
 
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
