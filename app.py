@@ -1,16 +1,19 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf.csrf import CSRFProtect
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_ENABLED'] = True
 
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 
 # ==================== Models ====================
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -33,13 +36,20 @@ class Submission(db.Model):
 
     __table_args__ = (db.UniqueConstraint('user_id', 'challenge_id', name='unique_user_challenge'),)
 
-# ==================== Routes ====================
-from flask import Flask, render_template
+# ==================== Decorators ====================
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin'):
+            flash('يجب تسجيل الدخول كمسؤول أولاً', 'warning')
+            return redirect(url_for('admin'))
+        return f(*args, **kwargs)
+    return decorated_function
 
+# ==================== Routes ====================
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -84,13 +94,10 @@ def dashboard():
     
     user_id = session['user_id']
     challenges = Challenge.query.all()
-    
-    # استعلام لمعرفة التحديات التي حلها المستخدم
     solved_challenges = db.session.query(Submission.challenge_id).filter_by(user_id=user_id).all()
     solved_ids = {challenge_id for (challenge_id,) in solved_challenges}
 
     return render_template('dashboard.html', challenges=challenges, solved_ids=solved_ids)
-
 
 @app.route('/submit_flag/<int:challenge_id>', methods=['POST'])
 def submit_flag(challenge_id):
@@ -128,11 +135,8 @@ def admin():
     return render_template('admin_login.html')
 
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
+@admin_required
 def admin_dashboard():
-    if not session.get('admin'):
-        return redirect(url_for('admin'))
-
-
     if request.method == 'POST':
         title = request.form['title']
         category = request.form['category']
@@ -150,45 +154,40 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', challenges=challenges, users=users)
 
 @app.route('/delete_challenge/<int:challenge_id>', methods=['POST'])
+@admin_required
 def delete_challenge(challenge_id):
-    if not session.get('admin'):
-        return redirect(url_for('admin'))
-
-    challenge = Challenge.query.get_or_404(challenge_id)
-    db.session.delete(challenge)
-    db.session.commit()
+    try:
+        challenge = Challenge.query.get_or_404(challenge_id)
+        Submission.query.filter_by(challenge_id=challenge_id).delete()
+        db.session.delete(challenge)
+        db.session.commit()
+        flash('تم حذف التحدي بنجاح', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ أثناء حذف التحدي: {str(e)}', 'danger')
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
+@admin_required
 def delete_user(user_id):
-    if not session.get('admin'):
-        return redirect(url_for('admin_login'))
-
-    user = User.query.get(user_id)
-    if user:
+    try:
+        user = User.query.get_or_404(user_id)
+        Submission.query.filter_by(user_id=user_id).delete()
         db.session.delete(user)
         db.session.commit()
         flash('تم حذف المستخدم بنجاح', 'success')
-    else:
-        flash('المستخدم غير موجود', 'danger')
-
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ أثناء حذف المستخدم: {str(e)}', 'danger')
     return redirect(url_for('admin_dashboard'))
-
 
 @app.route('/scoreboard')
 def scoreboard():
     users = User.query.order_by(User.score.desc()).all()
     return render_template('scoreboard.html', users=users)
 
-# ==================== Main ====================
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-    # ... كود تطبيق Flask بالكامل ...
-
-if __name__ == '__main__':
-    import os
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
 
