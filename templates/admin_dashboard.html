@@ -50,6 +50,12 @@
       <td>{{ u.username }}</td>
       <td><small>{{ u.password }}</small></td>
       <td>{{ u.score }}</td>
+      <td>
+  <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
+    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+  </form>
+</td>
+
     </tr>
     {% endfor %}
   </tbody>
