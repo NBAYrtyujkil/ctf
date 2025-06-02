@@ -42,7 +42,7 @@
             <th>اسم المستخدم</th>
             <th>كلمة المرور (مشفرة)</th>
             <th>النقاط</th>
-            <th>الإجراءات</th> <!-- هنا أضفنا العمود -->
+            <th>الإجراءات</th>
         </tr>
     </thead>
     <tbody>
@@ -52,17 +52,15 @@
             <td><small>{{ u.password }}</small></td>
             <td>{{ u.score }}</td>
             <td>
-             <td>
-  <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
-    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
-</form>
-
-</td>
-
+                <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
+                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
 
 
 <hr>
