@@ -3,11 +3,13 @@
 {% block title %}لوحة المستخدم{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+<script src="{{ url_for('static', filename='js/rain.js') }}"></script>
+<canvas id="matrix-rain"></canvas>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>التحديات</h1>
     <a href="{{ url_for('logout') }}" class="btn btn-outline-light">تسجيل خروج</a>
 </div>
-
 <table class="table table-striped table-dark">
     <thead>
         <tr>

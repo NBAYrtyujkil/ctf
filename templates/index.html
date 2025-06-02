@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>مرحبًا بك في CTF</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
+    <script src="../static/js/rain.js"></script>
+     <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0a192f; /* Dark navy */
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+    }
+    #matrix-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.7;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      color: #e6f1ff;
+      text-align: center;
+      padding-top: 20vh;
+    }
+  </style>
 </head>
 <body class="bg-dark text-light">
+
+     <!-- Canvas for binary rain -->
+  <canvas id="matrix-rain"></canvas>
+  <!-- Your content goes here -->
+  <div class="content">
+    <h1 style="color: #64ffda;">CYBER SECURITY PLATFORM</h1>
+    <p>Activating protective protocols...</p>
+  </div>
     <div class="container text-center mt-5">
         <h1 class="mb-4">مرحبًا بك في منصة التحديات CTF</h1>
         <p class="lead">ابدأ الآن في حل التحديات، وتصدر لوحة النتائج!</p>

@@ -1,55 +1,204 @@
+/* === Global Reset & Base Styles === */
+:root {
+  --primary-color: #0a192f;
+  /* Dark Navy */
+  --secondary-color: #172a45;
+  /* Sighter Navy */
+  --accent-color: #64ffda;
+  /* Cyber Teal */
+  --accent-dark: #1e90ff;
+  /* Electric Blue */
+  --text-primary: #e6f1ff;
+  /* Light Blue-White */
+  --text-secondary: #8892b0;
+  /* Grayish Blue */
+  --danger-color: #ff5555;
+  /* Red for alerts */
+  --warning-color: #ffcc00;
+  /* Yellow for warnings */
+}
+
 body {
-  background-color: #111827;
-  color: #eee;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
 }
 
+/* === Animated Cyber Background === */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(30, 144, 255, 0.1) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(100, 255, 218, 0.1) 0%, transparent 30%);
+  z-index: -1;
+  animation: pulse 15s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Optional: Matrix-like falling code effect (add a div in HTML) */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://i.imgur.com/6QJjQMe.png') center/cover;
+  opacity: 0.05;
+  z-index: -1;
+}
+
+/* === Centered Container === */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* === Card (Centered with Glow) === */
+.card {
+  background: rgba(23, 42, 69, 0.8);
+  border-radius: 10px;
+  padding: 30px;
+  margin: 20px auto;
+  width: 80%;
+  max-width: 600px;
+  box-shadow:
+    0 0 10px rgba(100, 255, 218, 0.3),
+    0 0 20px rgba(100, 255, 218, 0.1);
+  border-top: 1px solid var(--accent-color);
+  border-bottom: 1px solid var(--accent-color);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 15px rgba(100, 255, 218, 0.5),
+    0 0 25px rgba(100, 255, 218, 0.2);
+}
+
+/* === Buttons (Neon Glow) === */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  margin: 10px;
+}
+.btn:hover {
+  background: rgba(100, 255, 218, 0.1);
+  box-shadow:
+    0 0 10px rgba(100, 255, 218, 0.5),
+    0 0 20px rgba(100, 255, 218, 0.2);
+}
+
+
+/* === Form Inputs (Futuristic Glow) === */
+input,
+textarea,
+select {
+  width: 80%;
+  max-width: 500px;
+  padding: 12px;
+  margin: 10px auto;
+  background: rgba(23, 42, 69, 0.7);
+  border: 1px solid var(--text-secondary);
+  border-radius: 4px;
+  color: var(--text-primary);
+  display: block;
+  transition: all 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+  outline: none;
+}
+
+/* === Header/Navbar === */
 .navbar {
-  background-color: #1f2937 !important;
+  width: 100%;
+  padding: 20px;
+  background: rgba(10, 25, 47, 0.9);
+  border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+  position: fixed;
+  top: 0;
+  z-index: 1000;
 }
 
-.nav-link {
-  color: #cbd5e1 !important;
-  transition: color 0.3s ease;
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
 }
 
-.nav-link:hover {
-  color: #60a5fa !important;
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a192f;
+  /* Dark navy */
+  color: #e6f1ff;
+  font-family: 'Courier New', monospace;
+  overflow: scroll;
+  position: relative;
 }
 
-.table-dark {
-  background-color: #1f2937;
+#matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.7;
+  /* Adjust transparency */
 }
 
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #374151;
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 20px;
 }
 
-.btn-primary {
-  background-color: #2563eb;
-  border-color: #2563eb;
-}
+.container mt-4 {
 
-.btn-primary:hover {
-  background-color: #1e40af;
-  border-color: #1e40af;
-}
-
-.input-group input.form-control {
-  background-color: #374151;
-  border: none;
-  color: #eee;
-}
-
-.input-group input.form-control::placeholder {
-  color: #9ca3af;
-}
-
-.input-group .btn-success {
-  background-color: #22c55e;
-  border: none;
-}
-
-.input-group .btn-success:hover {
-  background-color: #16a34a;
+  
+  background: rgba(23, 42, 69, 0.7);
+  
 }

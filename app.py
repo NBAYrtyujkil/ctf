@@ -132,6 +132,7 @@ def admin_dashboard():
     if not session.get('admin'):
         return redirect(url_for('admin'))
 
+
     if request.method == 'POST':
         title = request.form['title']
         category = request.form['category']

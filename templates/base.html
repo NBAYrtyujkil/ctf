@@ -25,7 +25,6 @@
         <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">مستخدم جديد</a></li>
         {% endif %}
         {% if session.get('admin') %}
-        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('admin_dashboard') }}">لوحة الأدمن</a></li>
         {% endif %}
       </ul>
     </div>
