@@ -127,12 +127,15 @@ def submit_flag(challenge_id):
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    if request.method == 'POST':
-        password = request.form['password']
-        if password == 'admin123':
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        if form.password.data == 'admin123':
             session['admin'] = True
             return redirect(url_for('admin_dashboard'))
-    return render_template('admin_login.html')
+        else:
+            flash('كلمة المرور غير صحيحة', 'danger')
+    return render_template('admin_login.html', form=form)
+
 
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 @admin_required
