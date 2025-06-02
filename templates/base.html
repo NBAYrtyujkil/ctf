@@ -1,51 +1,122 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}CTF{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
-    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}نظام CTF{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a192f;
+            --secondary-dark: #172a45;
+            --cyber-teal: #64ffda;
+            --cyber-blue: #1e90ff;
+            --text-light: #e6f1ff;
+            --text-gray: #8892b0;
+        }
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100vh;
+        }
+        .cyber-card {
+            background: rgba(23, 42, 69, 0.8);
+            border: 1px solid var(--cyber-teal);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+        .btn-cyber {
+            border: 1px solid var(--cyber-teal);
+            color: var(--cyber-teal);
+            background: transparent;
+            transition: all 0.3s;
+        }
+        .btn-cyber:hover {
+            background: rgba(100, 255, 218, 0.1);
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+    </style>
+    {% block head %}{% endblock %}
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-dark mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('dashboard') }}">منصة CTF</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="تبديل التنقل">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if session.get('user_id') %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">لوحة التحديات</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('scoreboard') }}">لوحة النقاط</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">تسجيل خروج</a></li>
-        {% else %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">تسجيل الدخول</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">مستخدم جديد</a></li>
-        {% endif %}
-        {% if session.get('admin') %}
-        {% endif %}
-      </ul>
+    <canvas id="matrix-bg"></canvas>
+    <div class="container py-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
     </div>
-  </div>
-</nav>
 
-<div class="container">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-
-  {% block content %}{% endblock %}
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Binary Rain Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            const chars = "01٠١";
+            const fontSize = 18;
+            let drops = [];
+            
+            function initDrops() {
+                const cols = Math.floor(canvas.width / fontSize);
+                drops = Array(cols).fill(0).map(() => Math.random() * -100);
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(10, 25, 47, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#64ffda';
+                ctx.font = `${fontSize}px 'Courier New', monospace`;
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
+                    
+                    ctx.fillText(char, x, y);
+                    
+                    if (y > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            initDrops();
+            draw();
+        });
+    </script>
 </body>
 </html>
