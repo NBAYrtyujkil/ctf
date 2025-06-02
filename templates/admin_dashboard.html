@@ -6,9 +6,6 @@
 <!-- Binary Rain Background -->
 <canvas id="matrix-bg"></canvas>
 
-
-
-
 <h2 class="mb-4">لوحة تحكم المشرف</h2>
 
 <h3>إضافة تحدي جديد</h3>
@@ -34,6 +31,7 @@
     <input type="number" class="form-control" id="points" name="points" required min="0">
   </div>
   <button type="submit" class="btn btn-success">إضافة التحدي</button>
+</form> <!-- This closing tag was missing -->
 
 <h4>قائمة المستخدمين</h4>
 <table class="table table-bordered">
@@ -52,16 +50,16 @@
             <td><small>{{ u.password }}</small></td>
             <td>{{ u.score }}</td>
             <td>
-                <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المستخدم؟');">
-                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-danger btn-sm" 
+                            onclick="return confirm('هل أنت متأكد من حذف المستخدم؟')">حذف</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
-
 
 <hr>
 <a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a>
@@ -83,8 +81,8 @@
       <td>{{ challenge.category }}</td>
       <td>{{ challenge.points }}</td>
       <td>
-        <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST"
-          style="display:inline;">
+        <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button type="submit" class="btn btn-danger btn-sm"
             onclick="return confirm('هل أنت متأكد من حذف هذا التحدي؟')">حذف</button>
         </form>
@@ -93,7 +91,5 @@
     {% endfor %}
   </tbody>
 </table>
-
-
 
 {% endblock %}
