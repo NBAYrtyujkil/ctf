@@ -5,13 +5,15 @@ from flask_wtf.csrf import CSRFProtect
 from functools import wraps
 from forms import AdminLoginForm
 import secrets
-app.secret_key = secrets.token_hex(32)  # يولّد مفتاحًا عشوائيًا بطول 64 حرفًا
+
+# === تهيئة التطبيق ===
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = secrets.token_hex(32)  # تعيين مفتاح سري قوي وعشوائي
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['WTF_CSRF_ENABLED'] = True
 
+# === إعداد قواعد البيانات و CSRF ===
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 
@@ -35,7 +37,6 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenge.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
-
     __table_args__ = (db.UniqueConstraint('user_id', 'challenge_id', name='unique_user_challenge'),)
 
 # ==================== Decorators ====================
@@ -67,8 +68,9 @@ def register():
         user = User(username=username, password=hashed_pw)
         db.session.add(user)
         db.session.commit()
+        flash('تم التسجيل بنجاح، يمكنك الآن تسجيل الدخول.', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -79,6 +81,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
+            flash('تم تسجيل الدخول بنجاح.', 'success')
             return redirect(url_for('dashboard'))
         else:
             flash('اسم المستخدم أو كلمة المرور غير صحيحة.', 'danger')
@@ -87,13 +90,14 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
+    flash('تم تسجيل الخروج.', 'info')
     return redirect(url_for('login'))
 
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
+
     user_id = session['user_id']
     challenges = Challenge.query.all()
     solved_challenges = db.session.query(Submission.challenge_id).filter_by(user_id=user_id).all()
@@ -128,20 +132,16 @@ def submit_flag(challenge_id):
     return redirect(url_for('dashboard'))
 
 @app.route('/admin', methods=['GET', 'POST'])
-app.secret_key = 'q1!w2@e3#r4$t5%y6^'  # Set this once at the app level, outside routes
-
-@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     form = AdminLoginForm()
     if form.validate_on_submit():
-        if form.password.data == 'admin123':  # Your admin password here (or use environment variable)
+        if form.password.data == 'admin123':  # كلمة مرور الأدمن - من الأفضل تخزينها في متغير بيئة
             session['admin'] = True
+            flash('تم تسجيل الدخول كمسؤول.', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('كلمة المرور غير صحيحة', 'danger')
     return render_template('admin_login.html', form=form)
-
-
 
 @app.route('/admin_dashboard', methods=['GET', 'POST'])
 @admin_required
@@ -156,6 +156,7 @@ def admin_dashboard():
         challenge = Challenge(title=title, category=category, description=description, flag=flag, points=points)
         db.session.add(challenge)
         db.session.commit()
+        flash('تم إضافة التحدي بنجاح.', 'success')
         return redirect(url_for('admin_dashboard'))
 
     challenges = Challenge.query.all()
@@ -195,6 +196,7 @@ def scoreboard():
     users = User.query.order_by(User.score.desc()).all()
     return render_template('scoreboard.html', users=users)
 
+# === بدء التطبيق ===
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
