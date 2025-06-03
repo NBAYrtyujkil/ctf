@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  # تعيين مفتاح سري قوي وعشوائي
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['WTF_CSRF_ENABLED'] = True
+app.config['WTF_CSRF_ENABLED'] = False
 
 # === إعداد قواعد البيانات و CSRF ===
 db = SQLAlchemy(app)

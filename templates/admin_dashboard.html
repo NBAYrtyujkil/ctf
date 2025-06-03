@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم المشرف{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center" style="color: #64ffda;">لوحة تحكم المشرف</h2>
+
+<div class="cyber-card">
+    <h3 class="mb-3">إضافة تحدي جديد</h3>
+    <form method="POST" action="{{ url_for('admin_dashboard') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-3">
+            <label for="title" class="form-label">عنوان التحدي</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">التصنيف</label>
+            <input type="text" class="form-control" id="category" name="category" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">الوصف</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="flag" class="form-label">العلامة (Flag)</label>
+            <input type="text" class="form-control" id="flag" name="flag" required>
+        </div>
+        <div class="mb-3">
+            <label for="points" class="form-label">النقاط</label>
+            <input type="number" class="form-control" id="points" name="points" required min="0">
+        </div>
+        <button type="submit" class="btn btn-cyber">إضافة التحدي</button>
+    </form>
+</div>
+
+<div class="cyber-card">
+    <h4 class="mb-3">قائمة المستخدمين</h4>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>اسم المستخدم</th>
+                    <th>كلمة المرور (مشفرة)</th>
+                    <th>النقاط</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td><small>{{ u.password }}</small></td>
+                    <td>{{ u.score }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text-center mb-4">
+    <a href="{{ url_for('logout') }}" class="btn btn-cyber">تسجيل خروج</a>
+</div>
+
+<div class="cyber-card">
+    <h3 class="mb-3">قائمة التحديات</h3>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>العنوان</th>
+                    <th>التصنيف</th>
+                    <th>النقاط</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for challenge in challenges %}
+                <tr>
+                    <td>{{ challenge.title }}</td>
+                    <td>{{ challenge.category }}</td>
+                    <td>{{ challenge.points }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا التحدي؟')">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,9 @@
 /* === Global Reset & Base Styles === */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 150%;
+}
 :root {
   --primary-color: #0a192f;
   /* Dark Navy */
