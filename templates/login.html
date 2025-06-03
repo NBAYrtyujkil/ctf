@@ -13,17 +13,20 @@
 
     <h1>تسجيل الدخول</h1>
     <form method="POST">
-        <div class="mb-3">
-            <label for="username" class="form-label">اسم المستخدم</label>
-            <input type="text" name="username" id="username" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">كلمة المرور</label>
-            <input type="password" name="password" id="password" class="form-control" required />
-        </div>
-        <button type="submit" class="btn btn-primary">دخول</button>
-        <a href="/register" class="btn btn-secondary">تسجيل جديد</a>
+    {{ form.hidden_tag() }} <!-- لإدراج CSRF Token -->
+
+    <div class="mb-3">
+        {{ form.username.label }} {{ form.username(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.password.label }} {{ form.password(class="form-control") }}
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="/register" class="btn btn-secondary">تسجيل جديد</a>
     </form>
+
 
 </div>
 
