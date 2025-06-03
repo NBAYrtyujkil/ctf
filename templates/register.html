@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <title>تسجيل مستخدم جديد</title>
-    <link href="../static/css/custom.css" rel="stylesheet" />
-    <script src="../static/js/rain.js"></script>
-
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='js/rain.js') }}"></script>
 </head>
 <body class="bg-dark text-light">
 <canvas id="matrix-rain"></canvas>
+
 <div class="container py-4">
-    <h1>تسجيل مستخدم جديد</h1>
+    <h1 class="mb-4">تسجيل مستخدم جديد</h1>
 
     {% if error %}
     <div class="alert alert-danger" role="alert">
@@ -19,16 +19,21 @@
     {% endif %}
 
     <form method="POST">
+
         <div class="mb-3">
             <label for="username" class="form-label">اسم المستخدم</label>
             <input type="text" name="username" id="username" class="form-control" required />
         </div>
+
         <div class="mb-3">
             <label for="password" class="form-label">كلمة المرور</label>
             <input type="password" name="password" id="password" class="form-control" required />
         </div>
-        <button type="submit" class="btn btn-primary">تسجيل</button>
-        <a href="{{ url_for('login') }}" class="btn btn-secondary">تسجيل دخول</a>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">تسجيل</button>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">تسجيل دخول</a>
+        </div>
     </form>
 </div>
 

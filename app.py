@@ -1,13 +1,18 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf import CSRFProtect
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+csrf = CSRFProtect(app)
 db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['WTF_CSRF_SECRET_KEY'] = 'your_csrf_secret_key_here'
+app.config['WTF_CSRF_ENABLED'] = False
 
 # ==================== Models ====================
 
@@ -158,6 +163,19 @@ def delete_challenge(challenge_id):
     db.session.delete(challenge)
     db.session.commit()
     return redirect(url_for('admin_dashboard'))
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    try:
+        user = User.query.get_or_404(user_id)
+        Submission.query.filter_by(user_id=user_id).delete()
+        db.session.delete(user)
+        db.session.commit()
+        flash('تم حذف المستخدم بنجاح', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'حدث خطأ أثناء حذف المستخدم: {str(e)}', 'danger')
+    return redirect(url_for('admin_dashboard'))
+
 
 @app.route('/scoreboard')
 def scoreboard():

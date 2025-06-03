@@ -8,14 +8,16 @@
 <body class="bg-dark text-light">
 
 <div class="container py-4">
-    <h1>دخول الأدمن</h1>
+    <h1 class="mb-4">دخول الأدمن</h1>
     <form method="POST">
-        <div class="mb-3">
+       <div class="mb-3">
             <label for="password" class="form-label">كلمة مرور الأدمن</label>
             <input type="password" name="password" id="password" class="form-control" required />
         </div>
-        <button type="submit" class="btn btn-primary">دخول</button>
-        <a href="/login" class="btn btn-secondary">العودة لتسجيل الدخول</a>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">دخول</button>
+            <a href="/login" class="btn btn-secondary">العودة لتسجيل الدخول</a>
+        </div>
     </form>
 </div>
 

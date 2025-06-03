@@ -14,7 +14,7 @@
 <h3>إضافة تحدي جديد</h3>
 <form method="POST" action="{{ url_for('admin_dashboard') }}" class="mb-5">
   <div class="mb-3">
-    <label for="title" class="form-label">عنوان التحدي</label>
+    <label for="title" class="form-label">عنوان التحدي</label>+
     <input type="text" class="form-control" id="title" name="title" required>
   </div>
   <div class="mb-3">
@@ -51,40 +51,45 @@
       <td><small>{{ u.password }}</small></td>
       <td>{{ u.score }}</td>
     </tr>
+    <td>
+          <form method="POST" action="{{ url_for('delete_user', user_id=u.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+          </form>
+    </td>
     {% endfor %}
   </tbody>
 </table>
 
 <hr>
-<a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a>
-
-<h3 class="mt-4">قائمة التحديات</h3>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>العنوان</th>
-      <th>التصنيف</th>
-      <th>النقاط</th>
-      <th>الإجراءات</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for challenge in challenges %}
-    <tr>
-      <td>{{ challenge.title }}</td>
-      <td>{{ challenge.category }}</td>
-      <td>{{ challenge.points }}</td>
-      <td>
-        <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST"
-          style="display:inline;">
-          <button type="submit" class="btn btn-danger btn-sm"
-            onclick="return confirm('هل أنت متأكد من حذف هذا التحدي؟')">حذف</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+<h2>قائمة التحديات</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>العنوان</th>
+            <th>الفئة</th>
+            <th>النقاط</th>
+            <th>إجراء</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for challenge in challenges %}
+        <tr>
+            <td>{{ challenge.title }}</td>
+            <td>{{ challenge.category }}</td>
+            <td>{{ challenge.points }}</td>
+            <td>
+                <form action="{{ url_for('delete_challenge', challenge_id=challenge.id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا التحدي؟');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  
+                  <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+<a href="{{ url_for('logout') }}" class="btn btn-secondary">تسجيل خروج</a>
 
 </form>
 
