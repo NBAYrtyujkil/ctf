@@ -1,31 +1,24 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8" />
-    <title>تسجيل الدخول</title>
-    <link href="../static/css/custom.css" rel="stylesheet" />
-    <script src="../static/js/rain.js"></script>
-</head>
-<body class="bg-dark text-light" >
-    <canvas id="matrix-rain"></canvas>
-    <div class="container py-4">   
-         
+{% extends "base.html" %}
+{% block title %}الرئيسية{% endblock %}
+{% block content %}
 
-    <h1>تسجيل الدخول</h1>
-    <form method="POST">
-        <div class="mb-3">
-            <label for="username" class="form-label">اسم المستخدم</label>
-            <input type="text" name="username" id="username" class="form-control" required />
+<div class="container min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="card shadow p-4 w-100" style="max-width: 400px;">
+        <h3 class="text-center mb-4">تسجيل الدخول</h3>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">اسم المستخدم</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">كلمة المرور</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">دخول</button>
+        </form>
+        <div class="mt-3 text-center">
+            <a href="/register" class="text-decoration-none">إنشاء حساب جديد</a>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">كلمة المرور</label>
-            <input type="password" name="password" id="password" class="form-control" required />
-        </div>
-        <button type="submit" class="btn btn-primary">دخول</button>
-        <a href="/register" class="btn btn-secondary">تسجيل جديد</a>
-    </form>
-
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}
