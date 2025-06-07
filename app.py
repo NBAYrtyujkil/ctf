@@ -190,11 +190,15 @@ def delete_user(user_id):
         db.session.rollback()
         flash(f'حدث خطأ أثناء حذف المستخدم: {str(e)}', 'danger')
     return redirect(url_for('admin_dashboard'))
-
-@app.route('/scoreboard')
+@app.route("/scoreboard")
 def scoreboard():
-    users = User.query.order_by(User.score.desc()).all()
-    return render_template('scoreboard.html', users=users)
+    conn = get_db_connection()  # or your connection function
+    cur = conn.cursor()
+    cur.execute("SELECT username, score FROM users ORDER BY score DESC")
+    users = cur.fetchall()
+    conn.close()
+    return render_template("scoreboard.html", users=users)
+
 
 # === بدء التطبيق ===
 if __name__ == '__main__':
