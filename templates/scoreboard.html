@@ -1,31 +1,25 @@
 {% extends "base.html" %}
-{% block title %}الرئيسية{% endblock %}
+
 {% block content %}
-
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>مرحباً، {{ username }}</h4>
-        <a href="/logout" class="btn btn-danger">تسجيل الخروج</a>
-    </div>
-
-    <h5 class="mb-3">التحديات</h5>
-    <div class="row g-3">
-        {% for challenge in challenges %}
-        <div class="col-12 col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title">{{ challenge.name }}</h6>
-                    <p class="card-text">{{ challenge.description }}</p>
-                    <form method="POST" action="/submit_flag">
-                        <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
-                        <input type="text" name="flag" class="form-control mb-2" placeholder="أدخل الفلاج">
-                        <button type="submit" class="btn btn-primary w-100">إرسال</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+<div class="container mt-5 text-center">
+  <h2 class="text-white mb-4">لوحة الشرف</h2>
+  <table class="table table-dark table-striped table-bordered rounded shadow">
+    <thead class="table-success">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">اسم المستخدم</th>
+        <th scope="col">النقاط</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i, user in enumerate(users, start=1) %}
+      <tr>
+        <th scope="row">{{ i }}</th>
+        <td>{{ user['username'] }}</td>
+        <td>{{ user['score'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
-
 {% endblock %}
