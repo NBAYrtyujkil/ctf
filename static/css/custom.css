@@ -24,6 +24,7 @@ html, body {
 }
 
 body {
+  size: 80%;
   font-family: 'Roboto', 'Segoe UI', sans-serif;
   background-color: var(--primary-color);
   color: var(--text-primary);

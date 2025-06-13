@@ -158,6 +158,7 @@ def admin():
 @admin_required
 def admin_dashboard():
     if request.method == 'POST':
+        # existing challenge-adding code
         title = request.form['title']
         category = request.form['category']
         description = request.form['description']
@@ -171,8 +172,25 @@ def admin_dashboard():
         return redirect(url_for('admin_dashboard'))
 
     challenges = Challenge.query.all()
-    users = User.query.order_by(User.score.desc()).all()
+    users = User.query.all()  # 👈 Get all users here
     return render_template('admin_dashboard.html', challenges=challenges, users=users)
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+@admin_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+
+    # Prevent deleting admin user if needed
+    if user.username == 'admin':  # or whatever logic you use
+        flash('لا يمكن حذف حساب المشرف.', 'danger')
+        return redirect(url_for('admin_dashboard'))
+
+    # Optional: delete submissions too
+    Submission.query.filter_by(user_id=user_id).delete()
+    
+    db.session.delete(user)
+    db.session.commit()
+    flash('تم حذف المستخدم بنجاح.', 'success')
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/delete_challenge/<int:challenge_id>', methods=['GET', 'POST'])
 @admin_required
@@ -184,23 +202,6 @@ def delete_challenge(challenge_id):
     return redirect(url_for('admin_dashboard'))
 
 
-@app.route('/delete_user/<int:user_id>', methods=['POST'])
-@admin_required
-def delete_user(user_id):
-    try:
-        user = User.query.get_or_404(user_id)
-        Submission.query.filter_by(user_id=user_id).delete()
-        db.session.delete(user)
-        db.session.commit()
-        flash('تم حذف المستخدم بنجاح', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'حدث خطأ أثناء حذف المستخدم: {str(e)}', 'danger')
-    return redirect(url_for('admin_dashboard'))
-@app.route('/scoreboard')
-def scoreboard():
-    users = User.query.order_by(User.score.desc()).all()
-    return render_template('scoreboard.html', users=users)
 
 
 

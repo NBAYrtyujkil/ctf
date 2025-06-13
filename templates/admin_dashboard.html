@@ -43,5 +43,17 @@
         {% endfor %}
     </ul>
 </div>
+<h5 class="mt-5 mb-3">المستخدمون</h5>
+<ul class="list-group">
+    {% for user in users %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ user.username }} - نقاط: {{ user.score }}
+            <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
+                <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
 
 {% endblock %}
