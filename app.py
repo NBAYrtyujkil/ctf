@@ -115,7 +115,7 @@ def dashboard():
 
     return render_template('dashboard.html', challenges=challenges, solved_ids=solved_ids)
 
-@app.route('/submit_flag/<int:challenge_id>', methods=['POST'])
+@app.route('/dashboard/<int:challenge_id>', methods=['POST'])
 def submit_flag(challenge_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -140,6 +140,7 @@ def submit_flag(challenge_id):
         flash('إجابة خاطئة، حاول مرة أخرى.', 'danger')
 
     return redirect(url_for('dashboard'))
+
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
