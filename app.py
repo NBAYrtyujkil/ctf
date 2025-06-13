@@ -5,6 +5,17 @@ from flask_wtf.csrf import CSRFProtect
 from functools import wraps
 from forms import AdminLoginForm
 import secrets
+import sqlite3
+import os
+db = SQLAlchemy()
+
+def get_db_connection():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(BASE_DIR, 'ctf.db')
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
 
 # === تهيئة التطبيق ===
 app = Flask(__name__)
@@ -20,10 +31,9 @@ csrf = CSRFProtect(app)
 # ==================== Models ====================
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     score = db.Column(db.Integer, default=0)
-
 class Challenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
@@ -163,19 +173,15 @@ def admin_dashboard():
     users = User.query.order_by(User.score.desc()).all()
     return render_template('admin_dashboard.html', challenges=challenges, users=users)
 
-@app.route('/delete_challenge/<int:challenge_id>', methods=['POST'])
+@app.route('/delete_challenge/<int:challenge_id>', methods=['GET', 'POST'])
 @admin_required
 def delete_challenge(challenge_id):
-    try:
-        challenge = Challenge.query.get_or_404(challenge_id)
-        Submission.query.filter_by(challenge_id=challenge_id).delete()
-        db.session.delete(challenge)
-        db.session.commit()
-        flash('تم حذف التحدي بنجاح', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'حدث خطأ أثناء حذف التحدي: {str(e)}', 'danger')
+    challenge = Challenge.query.get_or_404(challenge_id)
+    db.session.delete(challenge)
+    db.session.commit()
+    flash('تم حذف التحدي بنجاح.', 'success')
     return redirect(url_for('admin_dashboard'))
+
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 @admin_required
@@ -190,14 +196,12 @@ def delete_user(user_id):
         db.session.rollback()
         flash(f'حدث خطأ أثناء حذف المستخدم: {str(e)}', 'danger')
     return redirect(url_for('admin_dashboard'))
-@app.route("/scoreboard")
+@app.route('/scoreboard')
 def scoreboard():
-    conn = get_db_connection()  # or your connection function
-    cur = conn.cursor()
-    cur.execute("SELECT username, score FROM users ORDER BY score DESC")
-    users = cur.fetchall()
-    conn.close()
-    return render_template("scoreboard.html", users=users)
+    users = User.query.order_by(User.score.desc()).all()
+    return render_template('scoreboard.html', users=users)
+
+
 
 
 # === بدء التطبيق ===

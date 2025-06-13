@@ -1,25 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-  <h2 class="text-white mb-4">لوحة الشرف</h2>
-  <table class="table table-dark table-striped table-bordered rounded shadow">
-    <thead class="table-success">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">اسم المستخدم</th>
-        <th scope="col">النقاط</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for i, user in enumerate(users, start=1) %}
-      <tr>
-        <th scope="row">{{ i }}</th>
-        <td>{{ user['username'] }}</td>
-        <td>{{ user['score'] }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
+<h1>CTF Scoreboard</h1><br><br>
+<div class"scoreboard">
+  <style>
+    .scoareboard {
+      width: 100px;
+      justify-content: center;
+      align-items: center;
+
+    }
+  </style>
+  <table border="0">
+    <tr>
+      <th>Username</th>
+      <th>Score</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.score }}</td>
+    </tr>
+    {% endfor %}
   </table>
 </div>
+<br><br>
+<p><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
 {% endblock %}

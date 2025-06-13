@@ -9,10 +9,14 @@
     </div>
 
     <h5>إضافة تحدي جديد</h5>
-    <form method="POST" action="/add_challenge" class="card p-3 shadow mb-4">
+    <form method="POST" action="{{ url_for('admin_dashboard') }}" class="card p-3 shadow mb-4">
         <div class="mb-3">
             <label class="form-label">اسم التحدي</label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">التصنيف</label>
+            <input type="text" name="category" class="form-control" required>
         </div>
         <div class="mb-3">
             <label class="form-label">الوصف</label>
